@@ -91,6 +91,42 @@
 
 - `INDEX`: `order_id` and `payment_date` for faster filtering of payments.
 
+
+# Handling Product Price Changes Over Time
+
+When dealing with product price changes, it’s important to ensure that orders reflect the price at the time of purchase, rather than the current price of the product. This is handled as follows:
+
+## Price at Order Time
+
+- The `OrderItems` table includes a column `price_at_order` which stores the price of the product at the time the order was placed.
+- When an order is placed, the current price of the product is copied into this `price_at_order` field.
+- This approach ensures that even if the product price changes later, the order reflects the price that the customer agreed to pay.
+
+# Handling Order Cancellations
+
+Order cancellations must be handled carefully to ensure data consistency and accurate financial reporting:
+
+## Order Status Field
+
+- Add a `status` column to the `Orders` table that can have values such as `Pending`, `Completed`, `Cancelled`, etc.
+- When an order is cancelled, update this field to `Cancelled`.
+
+## Reverting Stock Levels
+
+- When an order is cancelled, the system should automatically increase the stock level of the products included in that order by the quantity that was originally ordered.
+- This ensures that inventory remains accurate.
+
+## Payment Reversal
+
+- If a payment was made before the cancellation, a record of the payment reversal or refund should be stored in the `Payments` table.
+- This can be done by creating a new payment entry with a negative amount, indicating a refund.
+
+## Audit Trail
+
+- For better tracking and auditing, consider adding an `order_history` or `order_log` table that records all changes to the status of an order, including cancellations, along with timestamps and the user who made the change.
+- This can be important for resolving disputes or performing financial audits.
+
+
 ## Table Creation SQL Queries
 
 ### User Table
@@ -225,3 +261,9 @@ WHERE o.status = 'cancelled';
 ```
 
 #### Explanation: This query lists all canceled orders along with the reason for cancellation.
+
+
+
+# Optimization:
+    
+
