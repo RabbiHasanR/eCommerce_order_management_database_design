@@ -121,10 +121,6 @@ Order cancellations must be handled carefully to ensure data consistency and acc
 - If a payment was made before the cancellation, a record of the payment reversal or refund should be stored in the `Payments` table.
 - This can be done by creating a new payment entry with a negative amount, indicating a refund.
 
-## Audit Trail
-
-- For better tracking and auditing, consider adding an `order_history` or `order_log` table that records all changes to the status of an order, including cancellations, along with timestamps and the user who made the change.
-- This can be important for resolving disputes or performing financial audits.
 
 
 ## Table Creation SQL Queries
@@ -207,8 +203,8 @@ CREATE TABLE payment (
 
 ```sql
 SELECT u.user_id, u.name, COUNT(o.order_id) AS total_orders
-FROM user AS u
-LEFT JOIN order AS o ON u.user_id = o.user_id
+FROM user u
+LEFT JOIN order o ON u.user_id = o.user_id
 GROUP BY u.user_id;
 ```
 
@@ -219,7 +215,7 @@ GROUP BY u.user_id;
 
 ```sql
 SELECT p.product_id, p.name, SUM(oi.quantity * oi.price_at_order_time) AS total_revenue
-FROM orderitem AS oi
+FROM orderitem oi
 JOIN product p ON oi.product_id = p.product_id
 GROUP BY p.product_id
 ORDER BY total_revenue DESC
@@ -233,8 +229,8 @@ LIMIT 5;
 
 ```sql
 SELECT DISTINCT u.user_id, u.name, u.email
-FROM user AS u
-JOIN order AS o ON u.user_id = o.user_id
+FROM user u
+JOIN order o ON u.user_id = o.user_id
 WHERE o.order_date >= CURDATE() - INTERVAL 30 DAY;
 ```
 
@@ -245,8 +241,8 @@ WHERE o.order_date >= CURDATE() - INTERVAL 30 DAY;
 
 ```sql
 SELECT DISTINCT u.user_id, u.name, u.email
-FROM user AS u
-JOIN order AS o ON u.user_id = o.user_id
+FROM user u
+JOIN order o ON u.user_id = o.user_id
 WHERE o.order_date >= CURDATE() - INTERVAL 30 DAY;
 ```
 
@@ -256,7 +252,7 @@ WHERE o.order_date >= CURDATE() - INTERVAL 30 DAY;
 
 ```sql
 SELECT o.order_id, o.user_id, o.order_date, o.total_amount, o.status, o.canceled_reason
-FROM order AS o
+FROM order o
 WHERE o.status = 'cancelled';
 ```
 
@@ -267,3 +263,8 @@ WHERE o.status = 'cancelled';
 # Optimization:
     
 
+    - Indexes are important for query performance optimization, so proper indexing is needed for effective optimization.
+    - Additionally, debugging query execution time is necessary to identify which queries need optimization.
+    - Use caching for frequently used queries.
+    - Schema design optimizations, including proper use of foreign keys, data partitioning, and archiving, help manage large datasets effectively.
+    - For handling high-volume reads and writes, it's important to replicate the database and use load balancing for optimal performance.
