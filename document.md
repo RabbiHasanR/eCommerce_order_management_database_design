@@ -260,11 +260,10 @@ WHERE o.status = 'cancelled';
 
 
 
-# Optimization:
+## Optimization:
     
-
-    - Indexes are important for query performance optimization, so proper indexing is needed for effective optimization.
-    - Additionally, debugging query execution time is necessary to identify which queries need optimization.
-    - Use caching for frequently used queries.
-    - Schema design optimizations, including proper use of foreign keys, data partitioning, and archiving, help manage large datasets effectively.
-    - For handling high-volume reads and writes, it's important to replicate the database and use load balancing for optimal performance.
+- Indexes are important for query performance optimization, so proper indexing is needed for effective optimization.
+- Additionally, debugging query execution time is necessary to identify which queries need optimization.
+- Use caching for frequently used queries.
+- Schema design optimizations, including proper use of foreign keys, data partitioning, and archiving, help manage large datasets effectively.
+- For handling high-volume reads and writes, it's important to replicate the database and use load balancing for optimal performance.
